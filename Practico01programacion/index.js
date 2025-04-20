@@ -32,6 +32,12 @@ let dinoImg = new Image();
 dinoImg.src = "img/dino.png";      // Asegúrate de tener esta imagen en la ruta indicada
 let cactusImg = new Image();
 cactusImg.src = "img/cactus.png";  // Asegúrate de tener esta imagen en la ruta indicada
+let dinoImgJump = new Image();
+dinoImgJump.src = "img/dino-jump.jpg";  // Imagen del dinosaurio al saltar
+
+// Carga de sonidos
+let jumpSound = new Audio("audio/jump.mp3");
+let scoreSound = new Audio("audio/score.mp3");
 
 // Función principal del ciclo de juego
 function gameLoop() {
@@ -80,6 +86,7 @@ function update() {
     if (score % 100 === 0 && score !== 0 && score !== lastSpeedIncrease) {
         gameSpeed += 0.5;
         lastSpeedIncrease = score;
+        scoreSound.play(); // sonido de puntaje
     }
 }
 
@@ -104,9 +111,10 @@ function draw() {
     ctx.fillText("Score: " + score, 10, 25);
     ctx.fillText("High Score: " + highScore, 10, 50);
     
-    // Dibuja el dinosaurio (si la imagen está cargada, se usa; si no, se dibuja un rectángulo verde)
-    if (dinoImg.complete) {
-        ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+    // Dibuja el dinosaurio (cambia la imagen si está saltando)
+    let img = dino.isJumping ? dinoImgJump : dinoImg;
+    if (img.complete) {
+        ctx.drawImage(img, dino.x, dino.y, dino.width, dino.height);
     } else {
         ctx.fillStyle = "green";
         ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
@@ -129,6 +137,7 @@ document.addEventListener("keydown", function(e) {
         dino.isJumping = true;
         dino.vy = -10;  // Velocidad inicial de salto
         // Aquí se podrá agregar el efecto de sonido del salto en la modificación
+        jumpSound.play(); // sonido de salto
         e.preventDefault(); // Evita el scroll de la página
     }
 });
